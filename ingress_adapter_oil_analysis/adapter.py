@@ -100,8 +100,8 @@ def main():
 
     transform = Adapter(ingress_url, tenant_id, client_id, client_secret, dataset_guid)
 
-    print(transform.retrieve_data())
-    # transform.upload_json_data(schema_validate=False)
+    # print(transform.retrieve_data())
+    transform.upload_json_data(schema_validate=False)
 
 
 if __name__ == '__main__':
