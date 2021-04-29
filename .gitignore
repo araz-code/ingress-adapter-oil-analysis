@@ -133,3 +133,6 @@ conf.ini
 
 # IDE
 .idea/
+
+# Excel sheets
+*.xlsx
