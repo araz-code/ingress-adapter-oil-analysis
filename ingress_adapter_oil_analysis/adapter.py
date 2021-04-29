@@ -30,7 +30,7 @@ class Adapter(IngressAdapter):
         # self.sheet5 = config['Excel']['sheet5']
 
     def retrieve_data(self) -> bytes:
-        data_sheet1 = self.transform_sheet(self.excel_file, self.sheet1, 0, 0, None, 0, 52)
+        data_sheet1 = self.__transform_sheet(self.excel_file, self.sheet1, 0, 0, None, 0, 52)
         # data_sheet2 = self.transform_sheet(excel_file, self.sheet2, 2, 2, 3033, 0, 18)
         # data_sheet3 = self.transform_sheet(excel_file, self.sheet3, 2, 2, 1431, 0, 5)
         # data_sheet4 = self.transform_sheet(excel_file, self.sheet4, 1, 1, 4157, 0, 52)
@@ -39,14 +39,14 @@ class Adapter(IngressAdapter):
         return data_sheet1
 
     # pylint: disable=too-many-arguments
-    def transform_sheet(self,
-                        file: str,
-                        sheet: str,
-                        header: int,
-                        row_x: Optional[int],
-                        row_y: Optional[int],
-                        col_x: Optional[int],
-                        col_y: Optional[int]) -> bytes:
+    def __transform_sheet(self,
+                          file: str,
+                          sheet: str,
+                          header: int,
+                          row_x: Optional[int],
+                          row_y: Optional[int],
+                          col_x: Optional[int],
+                          col_y: Optional[int]) -> bytes:
         """
         Input XLSX file, format dates, and transform to JSON.
         :param file: The path to the XLSX file.
@@ -100,8 +100,8 @@ def main():
 
     transform = Adapter(ingress_url, tenant_id, client_id, client_secret, dataset_guid)
 
-    # print(transform.retrieve_data())
-    transform.upload_json_data(schema_validate=False)
+    print(transform.retrieve_data())
+    # transform.upload_json_data(schema_validate=False)
 
 
 if __name__ == '__main__':
