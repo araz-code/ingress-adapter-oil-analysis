@@ -6,8 +6,7 @@ from typing import Optional
 import pandas
 
 from osiris.adapters.ingress_adapter import IngressAdapter
-
-from .configuration import Configuration
+from osiris.core.configuration import Configuration
 
 configuration = Configuration(__file__)
 config = configuration.get_config()
@@ -100,8 +99,8 @@ def main():
 
     transform = Adapter(ingress_url, tenant_id, client_id, client_secret, dataset_guid)
 
-    # print(transform.retrieve_data())
-    transform.upload_json_data(schema_validate=False)
+    print(transform.retrieve_data())
+    # transform.upload_json_data(schema_validate=False)
 
 
 if __name__ == '__main__':
