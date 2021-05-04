@@ -13,7 +13,7 @@ config = configuration.get_config()
 logger = configuration.get_logger()
 
 
-class Adapter(IngressAdapter):
+class OilAnalysisAdapter(IngressAdapter):
     """
     Transforming XLSX to json format
     """
@@ -29,11 +29,11 @@ class Adapter(IngressAdapter):
         # self.sheet5 = config['Excel']['sheet5']
 
     def retrieve_data(self) -> bytes:
-        data_sheet1 = self.__transform_sheet(self.excel_file, self.sheet1, 0, 0, None, 0, 52)
-        # data_sheet2 = self.transform_sheet(excel_file, self.sheet2, 2, 2, 3033, 0, 18)
-        # data_sheet3 = self.transform_sheet(excel_file, self.sheet3, 2, 2, 1431, 0, 5)
-        # data_sheet4 = self.transform_sheet(excel_file, self.sheet4, 1, 1, 4157, 0, 52)
-        # data_sheet5 = self.transform_sheet(excel_file, self.sheet5, 2, 2, 98, 0, 52)
+        data_sheet1 = self.__transform_sheet(self.excel_file, self.sheet1, col_y=52)
+        # data_sheet2 = self.__transform_sheet(self.excel_file, self.sheet2, header_row=3, row_y=3031, col_y=18)
+        # data_sheet3 = self.__transform_sheet(self.excel_file, self.sheet3, header_row=3, row_y=1429, col_y=5)
+        # data_sheet4 = self.__transform_sheet(self.excel_file, self.sheet4, header_row=2, row_y=4155, col_y=52)
+        # data_sheet5 = self.__transform_sheet(self.excel_file, self.sheet5, header_row=3)
 
         return data_sheet1
 
@@ -41,11 +41,11 @@ class Adapter(IngressAdapter):
     def __transform_sheet(self,
                           file: str,
                           sheet: str,
-                          header: int,
-                          row_x: Optional[int],
-                          row_y: Optional[int],
-                          col_x: Optional[int],
-                          col_y: Optional[int]) -> bytes:
+                          header_row: int = 0,
+                          row_x: Optional[int] = None,
+                          row_y: Optional[int] = None,
+                          col_x: Optional[int] = None,
+                          col_y: Optional[int] = None) -> bytes:
         """
         Input XLSX file, format dates, and transform to JSON.
         :param file: The path to the XLSX file.
@@ -57,12 +57,8 @@ class Adapter(IngressAdapter):
         :param col_x: The last column in the sheet.
         """
         logger.info('Running transformation.')
-        dataframe = pandas.read_excel(file, sheet_name=sheet, engine='openpyxl')
 
-        if header != 0:
-            dataframe.columns = dataframe.iloc[header]
-            dataframe = dataframe.drop(header)
-            dataframe = dataframe.reset_index(drop=True)
+        dataframe = pandas.read_excel(file, sheet_name=sheet, engine='openpyxl', header=header_row)
 
         dataframe = dataframe.iloc[row_x:row_y, col_x:col_y]
 
@@ -97,7 +93,7 @@ def main():
     client_id = config['Authorization']['client_id']
     client_secret = config['Authorization']['client_secret']
 
-    transform = Adapter(ingress_url, tenant_id, client_id, client_secret, dataset_guid)
+    transform = OilAnalysisAdapter(ingress_url, tenant_id, client_id, client_secret, dataset_guid)
 
     print(transform.retrieve_data())
     # transform.upload_json_data(schema_validate=False)
