@@ -50,7 +50,7 @@ class OilAnalysisAdapter(IngressAdapter):
         Input XLSX file, format dates, and transform to JSON.
         :param file: The path to the XLSX file.
         :param sheet: The name of the sheet in the XLSX file.
-        :param header: The row the headers start at.
+        :param header_row: The row the headers start at.
         :param row_x: The row the data begins at.
         :param row_y: The row the data ends at.
         :param col_x: The first column in the sheet.
@@ -70,11 +70,11 @@ class OilAnalysisAdapter(IngressAdapter):
 
         if sheet == self.sheet1:
             dataframe['pCH4'] = dataframe['CH4_µL/L'] / \
-                (dataframe['CH4_µL/L'] + dataframe['C2H4_µL/L'] + dataframe['C2H2_µL/L'])
+                (dataframe['CH4_µL/L'] + dataframe['C2H4_µL/L'] + dataframe['C2H2_µL/L']) * 100
             dataframe['pC2H4'] = dataframe['C2H4_µL/L'] / \
-                (dataframe['CH4_µL/L'] + dataframe['C2H4_µL/L'] + dataframe['C2H2_µL/L'])
+                (dataframe['CH4_µL/L'] + dataframe['C2H4_µL/L'] + dataframe['C2H2_µL/L']) * 100
             dataframe['pC2H2'] = dataframe['C2H2_µL/L'] / \
-                (dataframe['CH4_µL/L'] + dataframe['C2H4_µL/L'] + dataframe['C2H2_µL/L'])
+                (dataframe['CH4_µL/L'] + dataframe['C2H4_µL/L'] + dataframe['C2H2_µL/L']) * 100
 
         dataframe_dict = dataframe.to_dict(orient='records')
 
@@ -95,8 +95,8 @@ def main():
 
     transform = OilAnalysisAdapter(ingress_url, tenant_id, client_id, client_secret, dataset_guid)
 
-    print(transform.retrieve_data())
-    # transform.upload_json_data(schema_validate=False)
+    # print(transform.retrieve_data())
+    transform.upload_json_data(schema_validate=False)
 
 
 if __name__ == '__main__':
